@@ -62,7 +62,7 @@ app.get('/users/delete/:id', function(request, response) {
     console.log('Removing user with id:' + id);
     console.log(db.users.remove({_id: id}));
     
-    response.send("Deleted user " + id);
+    response.send("Deleted user " + id + "<a href='/users/list'>User List</a>");
 
 });
 
