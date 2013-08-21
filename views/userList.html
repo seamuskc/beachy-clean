@@ -1,0 +1,23 @@
+<% include header.html %>
+<body>
+    <div class="row-fluid heading">
+        <div class="span12">
+            <h4>User List</h4>
+        </div>
+    </div>
+    
+    <table>
+        <% for(var i = 0; i < users.length; i++) { %>
+        <tr>
+            <td><%= users[i].firstName %></td>
+            <td><%= users[i].lastName %></td>
+            <td><%= users[i].email %></td>
+            
+        </tr>
+            
+        </tr>
+<% } %>
+    </table>
+        
+    </body>
+<% include footer.html %>
