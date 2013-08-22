@@ -7,18 +7,14 @@
     </div>
     
     <table>
-        <% for(var i = 0; i < users.length; i++) { %>
-        <tr>
-            <td><%= users[i].firstName %></td>
-            <td><%= users[i].lastName %></td>
-            <td><%= users[i].email %></td>
-            <td><a href="delete/<%= users[i]._id %>">Delete</a></td>
-            
-            
-        </tr>
-            
-        </tr>
-<% } %>
+        <% for (var i = 0; i < users.length; i++) { %>
+            <tr>
+                <td><%= users[i].firstName %></td>
+                <td><%= users[i].lastName %></td>
+                <td><%= users[i].email %></td>
+                <td><a href="delete/<%= users[i]._id %>">Delete</a></td>
+            </tr>
+        <% } %>
     </table>
         
     </body>

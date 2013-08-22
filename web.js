@@ -36,22 +36,26 @@ app.get('/users/list', function(request, response) {
     
 });
 
+var User = function(id, firstName, lastName, email, password) {
+    return {
+        _id: id,
+        firstName: firstName,
+        lastName:lastName,
+        email:email,
+        password:password
+    }
+}
+
 app.post('/register', function(request, response) {
     
     var id = ObjectId();
-    db.users.save({
-        _id: id,
-        firstName:request.body.firstName,
-        lastName:request.body.lastName,
-        email:request.body.email,
-        password:request.body.password
-    });
+    var params = request.body;
+    var user = new User(id, params.firstName, params.lastName, params.email, params.password);
+    db.users.save(user);
     
     response.render('confirm', {
         title:"Confirm",
-        firstName:request.body.firstName,
-        lastName:request.body.lastName,
-        email:request.body.email
+        user:user
     });
 
 });
