@@ -1,6 +1,8 @@
 var express = require('express');
 var app = express();
 app.use(express.bodyParser());
+app.use(express.static(__dirname + "/public"));
+
 app.engine('.html', require('ejs').__express);
 app.set('view engine', 'html');
 
@@ -10,10 +12,10 @@ var mongojs = require("mongojs");
 var db = mongojs.connect(databaseUrl, collections);
 var ObjectId = mongojs.ObjectId;
 
-app.get('/register', function(request, response) {
-    
-    response.render('register', {title:"Register"});
 
+
+app.get('/register', function(request, response) {
+    response.render('register', {title:"Register"});
 });
 
 app.get('/users/list', function(request, response) {
