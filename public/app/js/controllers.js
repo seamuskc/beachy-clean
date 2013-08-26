@@ -2,23 +2,49 @@
 
 /* Controllers */
 
-function PhoneListCtrl($scope, Phone) {
-  $scope.phones = Phone.query();
-  $scope.orderProp = 'age';
+
+function UserListCtrl($scope, User) {
+
+    $scope.users = User.query();
+    $scope.orderProp = 'lastName';
+  
+    $scope.deleteUser = function(user){
+      
+        user.$delete({id:user._id});
+        $scope.users.splice($scope.users.indexOf(user),1);
+      
+  };
 }
 
-//PhoneListCtrl.$inject = ['$scope', 'Phone'];
+//UserListCtrl.$inject = ['$scope', 'User'];
 
 
 
-function PhoneDetailCtrl($scope, $routeParams, Phone) {
-  $scope.phone = Phone.get({phoneId: $routeParams.phoneId}, function(phone) {
-    $scope.mainImageUrl = phone.images[0];
+function UserDetailCtrl($scope, $routeParams, User, $location) {
+  
+  var user = User.get({id: $routeParams.userId}, function() {
+    $scope.user = user;
   });
+  
+   $scope.saveUser = function() {
+      user.$save();
+      $location.path("/users/list");
+      
+  };
 
-  $scope.setImage = function(imageUrl) {
-    $scope.mainImageUrl = imageUrl;
-  }
 }
 
-//PhoneDetailCtrl.$inject = ['$scope', '$routeParams', 'Phone'];
+//UserDetailCtrl.$inject = ['$scope', '$routeParams', 'User'];
+
+function UserRegistrationCtrl($scope, User, $location) {
+  
+  $scope.saveUser = function() {
+      //alert(JSON.stringify($scope.user));
+      var newUser = new User($scope.user);
+      newUser.$save();
+      $location.path("/users/list");
+      
+  };
+  
+};
+

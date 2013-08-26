@@ -3,8 +3,8 @@ var app = express();
 app.use(express.bodyParser());
 app.use(express.static(__dirname + "/public"));
 
-app.engine('.html', require('ejs').__express);
-app.set('view engine', 'html');
+//app.engine('.html', require('ejs').__express);
+//app.set('view engine', 'html');
 
 var databaseUrl = "test"; // "username:password@example.com/mydb"
 var collections = ["users"]
@@ -21,21 +21,38 @@ app.get('/register', function(request, response) {
 app.get('/users/list', function(request, response) {
     
     db.users.find({}, function(err, users) {
-        var output = "";
         if( err || !users) {
-            response.send("No Users users found");
+            response.send({});
         }
         else {
-            response.render("userList", {title:"User List", users:users});
-            //users.forEach( function(user) {
-            //    output += JSON.stringify(user);
-            //});
+            response.send(users);
         }
-        
-        //response.send(output);
     });
+});
+
+app.get('/user', function(request, response) {
     
+    db.users.find({}, function(err, users) {
+        if( err || !users) {
+            response.send({});
+        }
+        else {
+            response.send(users);
+        }
+    });
+});
+
+app.get('/user/:id', function(request, response) {
     
+    console.log("Retrieving user with id " + request.params.id);
+    db.users.findOne({_id:new ObjectId(request.params.id)}, function(err, user) {
+        if( err || !user) {
+            response.send({});
+        }
+        else {
+            response.send(user);
+        }
+    });
 });
 
 var User = function(id, firstName, lastName, email, password) {
@@ -48,28 +65,25 @@ var User = function(id, firstName, lastName, email, password) {
     }
 }
 
-app.post('/register', function(request, response) {
+app.post('/user', function(request, response) {
     
-    var id = ObjectId();
+    
+    var id = (request.body._id) ? ObjectId(request.body._id) : ObjectId();
     var params = request.body;
     var user = new User(id, params.firstName, params.lastName, params.email, params.password);
     db.users.save(user);
     
-    response.render('confirm', {
-        title:"Confirm",
-        user:user
-    });
+    response.send({outcome:"success", data:user});
 
 });
 
-app.get('/users/delete/:id', function(request, response) {
+app.delete('/user/:id', function(request, response) {
     
     var id = ObjectId(request.params.id);
     console.log('Removing user with id:' + id);
     console.log(db.users.remove({_id: id}));
     
-    response.send("Deleted user " + id + "<a href='/users/list'>User List</a>");
-
+    response.status(200);
 });
 
 var port = process.env.PORT || 8080;

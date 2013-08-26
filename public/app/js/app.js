@@ -2,10 +2,11 @@
 
 /* App Module */
 
-angular.module('phonecat', ['phonecatFilters', 'phonecatServices']).
+angular.module('beachyCleanApp', ['beachyCleanAppFilters', 'beachyCleanAppServices']).
   config(['$routeProvider', function($routeProvider) {
   $routeProvider.
-      when('/phones', {templateUrl: 'partials/phone-list.html',   controller: PhoneListCtrl}).
-      when('/phones/:phoneId', {templateUrl: 'partials/phone-detail.html', controller: PhoneDetailCtrl}).
-      otherwise({redirectTo: '/phones'});
+      when('/users/list', {templateUrl: 'partials/user-list.html',   controller: UserListCtrl}).
+      when('/user/:userId', {templateUrl: 'partials/user-detail.html', controller: UserDetailCtrl}).
+      when('/register', {templateUrl: 'partials/register.html', controller: UserRegistrationCtrl}).
+      otherwise({redirectTo: '/register'});
 }]);
