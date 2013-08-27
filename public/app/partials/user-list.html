@@ -1,0 +1,36 @@
+<div class="container">
+    
+    <form class="form-horizontal">
+        
+        <div class="form-group">
+            <label class="control-label col-lg-2" for="query">Search</label>
+            <div class="controls col-lg-4">
+                <input ng-model="query" class="form-control" type="text" id="query" placeholder="Query">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="control-label  col-lg-2" for="orderBy">Order By</label>
+            <div class="controls col-lg-4">
+                <select ng-model="orderProp" id="orderBy" class="form-control">
+                    <option value="lastName">Last Name</option>
+                    <option value="email">Email</option>
+                </select>    
+            </div>
+        </div>
+    </form>
+    
+    <div class="col-6">
+        <table class="table table-striped">
+            <tr ng-repeat="user in users | filter:query | orderBy:orderProp">
+                <td>{{user.firstName}}</td>
+                <td>{{user.lastName}}</td>
+                <td>{{user.email}}</td>
+                <td><a class="btn btn-success btn-small" href="#/user/{{user._id}}">Edit</button></td>    
+                <td><button class="btn btn-danger btn-small" ng-click="deleteUser(user)">Delete</button></td>    
+            </tr>
+        </table>
+    </div>
+    
+    <a class="btn btn-primary" href="#/register">Add New</a>
+</div>
