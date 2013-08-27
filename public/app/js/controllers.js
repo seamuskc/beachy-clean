@@ -3,11 +3,11 @@
 /* Controllers */
 
 
-function UserListCtrl($scope, User) {
+function UserListCtrl($scope, Users) {
 
-    $scope.users = User.query();
+    $scope.users = Users.query({}, function(){}, function(response){$scope.errorMessage = response.data.message});
     $scope.orderProp = 'lastName';
-  
+      
     $scope.deleteUser = function(user){
       
         user.$delete({id:user._id});
@@ -16,35 +16,41 @@ function UserListCtrl($scope, User) {
   };
 }
 
-//UserListCtrl.$inject = ['$scope', 'User'];
+//UserListCtrl.$inject = ['$scope', 'Users'];
 
 
 
-function UserDetailCtrl($scope, $routeParams, User, $location) {
+function UserDetailCtrl($scope, $routeParams, Users, $location) {
   
-  var user = User.get({id: $routeParams.userId}, function() {
+  var user = Users.get({id: $routeParams.userId}, function() {
     $scope.user = user;
-  });
+  }, function(response){alert(response.data.message)});
   
    $scope.saveUser = function() {
-      user.$save();
-      $location.path("/users/list");
+      user.$save({}, function(){$location.path("/users/list")}, function(response){$scope.message = response.data.message;});
+      ;
       
   };
 
 }
 
-//UserDetailCtrl.$inject = ['$scope', '$routeParams', 'User'];
+//UserDetailCtrl.$inject = ['$scope', '$routeParams', 'Users'];
 
-function UserRegistrationCtrl($scope, User, $location) {
+function UserRegistrationCtrl($scope, Users, $location) {
   
   $scope.saveUser = function() {
       //alert(JSON.stringify($scope.user));
-      var newUser = new User($scope.user);
-      newUser.$save();
-      $location.path("/users/list");
+      var newUser = new Users($scope.user);
+      newUser.$save({}, 
+        function(){
+            $location.path("/users/list")
+        }, 
+        function(response){
+            $scope.message = response.data.message
+        });
       
   };
   
 };
 
+//UserRegistrationCtrl.$inject = ['$scope', '$routeParams', 'Users'];

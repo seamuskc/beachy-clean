@@ -22,11 +22,12 @@ var User = function(id, firstName, lastName, email, password) {
     }
 }
 
-app.get('/user', function(request, response) {
+app.get('/users', function(request, response) {
     
     db.users.find({}, function(err, users) {
         if( err || !users) {
-            response.send({});
+            response.send(500, {message:"Unable to retrieve users at this time."});
+            return;
         }
         else {
             response.send(users);
@@ -34,20 +35,23 @@ app.get('/user', function(request, response) {
     });
 });
 
-app.get('/user/:id', function(request, response) {
+app.get('/users/:id', function(request, response) {
     
     console.log("Retrieving user with id " + request.params.id);
     db.users.findOne({_id:new ObjectId(request.params.id)}, function(err, user) {
-        if( err || !user) {
-            response.send(404);
+        if( err || !user || user.firstName == 'Dave') {
+            response.send(404, {message:"Daves not here."});
         }
-        else {
+        else if (user.firstName == "Fred") {
+            response.send(500, {message:"Bad Fred"});
+            return;
+        } else {
             response.send(user);
         }
     });
 });
 
-app.delete('/user/:id', function(request, response) {
+app.delete('/users/:id', function(request, response) {
     
     var id = ObjectId(request.params.id);
     console.log('Removing user with id:' + id);
@@ -55,11 +59,15 @@ app.delete('/user/:id', function(request, response) {
     response.send(200);
 });
 
-app.post('/user', function(request, response) {
+app.post('/users', function(request, response) {
     
     
     var id = (request.body._id) ? ObjectId(request.body._id) : ObjectId();
     var params = request.body;
+    if (params.firstName == "Dave") {
+        response.send(500, {message:"Daves Not Here"});
+        return;
+    }
     var user = new User(id, params.firstName, params.lastName, params.email, params.password);
     db.users.save(user);
     

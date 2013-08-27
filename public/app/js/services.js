@@ -2,12 +2,9 @@
 
 /* Services */
 
-angular.module('beachyCleanAppServices', ['ngResource']).
-    factory('User', function($resource){
-        return $resource('/user/:id');
-});
+var app = angular.module('beachyCleanAppServices', ['ngResource']);
 
-
-
-
-
+app.factory('Users', function($resource) {
+        return $resource('/users/:id');
+    }
+);
