@@ -1,8 +1,7 @@
 'use strict';
 
 /* App Module */
-
-angular.module('beachyCleanApp', ['beachyCleanAppFilters', 'beachyCleanAppServices']).
+angular.module('beachyCleanApp', ['beachyCleanAppFilters', 'beachyCleanAppServices', 'ui.bootstrap']).
   config(['$routeProvider', function($routeProvider) {
   $routeProvider.
       when('/users/list', {templateUrl: 'partials/user-list.html',   controller: UserListCtrl}).

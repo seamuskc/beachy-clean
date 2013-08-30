@@ -25,6 +25,10 @@ var User = function(id, firstName, lastName, email, password) {
     }
 }
 
+app.get("/", function(request, response) {
+    response.redirect("/app/index.html");
+})
+
 app.get('/users', function(request, response) {
     
     db.users.find({}, function(err, users) {
@@ -42,12 +46,11 @@ app.get('/users/:id', function(request, response) {
     
     console.log("Retrieving user with id " + request.params.id);
     db.users.findOne({_id:new ObjectId(request.params.id)}, function(err, user) {
-        if( err || !user || user.firstName == 'Dave') {
-            response.send(404, {message:"Daves not here."});
+        if(err) {
+            response.send(500, {message:"Unable to retrieve user at this time."});
         }
-        else if (user.firstName == "Fred") {
-            response.send(500, {message:"Bad Fred"});
-            return;
+        else if (!user) {
+            response.send(404, {message:"No user found for id " + request.params.id});
         } else {
             response.send(user);
         }
@@ -58,8 +61,11 @@ app.delete('/users/:id', function(request, response) {
     
     var id = ObjectId(request.params.id);
     console.log('Removing user with id:' + id);
-    console.log(db.users.remove({_id: id}));
-    response.send(200);
+    db.users.remove({_id: id}, function(err, updateCount){
+        console.log("removeCount: " + updateCount + "  err:" + err);
+        response.send(updateCount > 0 ? 200 : 500);    
+    })
+    
 });
 
 app.post('/users', function(request, response) {
