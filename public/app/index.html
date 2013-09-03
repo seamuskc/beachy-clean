@@ -24,7 +24,7 @@
         /* Large desktop */
         @media(min-width: 980px) {
             body {
-                padding-top: 60px;
+                /*padding-top: 60px;*/
             }
             .linediv-l {
                 border-right: 1px white solid;
@@ -64,11 +64,42 @@
             color:#b94a48;
             
         }
+        
+        #right-commands {
+            float:right;
+        }
+        
+        .app-header {
+            background-color:#f3f3f3;
+            height:50px;
+            padding:5px;
+        }
     </style>
 </head>
 <body>
 
-  <div ng-view></div>
+
+    <div ng-controller="HeaderCtrl" class="app-header">
+        <div id="right-commands">
+            <div ng-hide="isAuthenticated" id="login-section">
+                <a href="#/register" ng-hide="displayLogin">Register | </a><a ng-click="showLogin()" ng-hide="displayLogin">Login</a> 
+                <form class="form-inline" role="form" ng-show="displayLogin">
+                    <div class="form-inline">
+                        <input ng-model="email" type="email" class="form-control" id="email" placeholder="Enter email" style="width:200px;">
+                        <input ng-model="password" type="password" class="form-control" id="password" placeholder="Password" style="width:200px;">
+                        <button type="submit" class="btn btn-default" ng-click="login()">Sign in</button>
+                    </div>
+                </form>
+            </div>
+            
+            <div id="user-info" ng-show="isAuthenticated">
+                Hello {{email}} <a ng-click="logout()">Logout</a>
+            </div>
+        </div>
+        <div style="clear:both;"></div>
+    </div>
+
+    <div ng-view></div>
 
 </body>
 </html>

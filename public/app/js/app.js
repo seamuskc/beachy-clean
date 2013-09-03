@@ -7,5 +7,6 @@ angular.module('beachyCleanApp', ['beachyCleanAppFilters', 'beachyCleanAppServic
       when('/users/list', {templateUrl: 'partials/user-list.html',   controller: UserListCtrl}).
       when('/user/:userId', {templateUrl: 'partials/user-detail.html', controller: UserDetailCtrl}).
       when('/register', {templateUrl: 'partials/register.html', controller: UserRegistrationCtrl}).
-      otherwise({redirectTo: '/register'});
+      when('/home', {templateUrl: 'partials/home.html', controller: HomeCtrl}).
+      otherwise({redirectTo: '/home'});
 }]);

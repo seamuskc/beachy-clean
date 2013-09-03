@@ -3,6 +3,30 @@
 /* Controllers */
 
 
+function HeaderCtrl($scope, $location) {
+    
+    $scope.isAuthenticated = false;
+    $scope.displayLogin = false;
+    
+    $scope.showLogin = function() {
+        $scope.email = "";
+        $scope.password = "";
+        $scope.displayLogin = true;
+    };
+    
+    $scope.login = function(){
+        $scope.isAuthenticated = true;
+        $scope.displayLogin = false;
+        $location.path("/users/list");
+    };
+    
+    $scope.logout = function() {
+        $scope.isAuthenticated = false;
+        $location.path("/home");
+        
+    };
+}
+
 function UserListCtrl($scope, Users) {
 
     $scope.users = Users.query({}, function(){}, function(response){$scope.errorMessage = response.data.message});
@@ -89,6 +113,11 @@ function UserRegistrationCtrl($scope, Users, $location) {
       
   };
   
+};
+
+function HomeCtrl($scope) {
+    
+    
 };
 
 //UserRegistrationCtrl.$inject = ['$scope', '$routeParams', 'Users'];
