@@ -22,6 +22,10 @@ app.factory('AuthService', function($http){
                 .error(function(resp){
                     error(resp);
                 })
+        },
+        
+        isPublic : function(url){
+            return ("partials/home.html" == url || "partials/register.html" == url);
         }
     };
     

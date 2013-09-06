@@ -12,10 +12,10 @@ angular.module('beachyCleanApp', ['beachyCleanAppFilters', 'beachyCleanAppServic
     }])
 
 
-    .run(['$rootScope', '$location', function ($rootScope, $location) {
+    .run(['$rootScope', '$location', function ($rootScope, $location, AuthService) {
 
         $rootScope.$on("$routeChangeStart", function (event, next, current) {
-            if ("partials/home.html" == next.$$route.templateUrl) {
+            if (AuthService.isPublic(next.$$route.templateUrl)) {
                 return;
             }
             if (!$rootScope.user) {
