@@ -3,7 +3,7 @@
 /* Controllers */
 
 
-function HeaderCtrl($scope, $location) {
+function HeaderCtrl($scope, $location, $http) {
     
     $scope.isAuthenticated = false;
     $scope.displayLogin = false;
@@ -12,12 +12,24 @@ function HeaderCtrl($scope, $location) {
         $scope.email = "";
         $scope.password = "";
         $scope.displayLogin = true;
+        $scope.msg = undefined;
     };
     
-    $scope.login = function(){
-        $scope.isAuthenticated = true;
-        $scope.displayLogin = false;
-        $location.path("/users/list");
+    $scope.login = function() {
+        
+        $scope.msg = undefined;
+        
+        $http.post('/login', {username:$scope.email, password:$scope.password})
+        .success(function(resp){
+            $scope.user = resp;
+            $scope.isAuthenticated = true;
+            $scope.displayLogin = false;
+            $location.path("/users/list");
+        })
+        .error(function(resp){
+            $scope.msg = "Nope! Try again!";
+        })
+        
     };
     
     $scope.logout = function() {
@@ -98,7 +110,7 @@ function UserDetailCtrl($scope, $routeParams, Users, $location) {
 
 //UserDetailCtrl.$inject = ['$scope', '$routeParams', 'Users'];
 
-function UserRegistrationCtrl($scope, Users, $location) {
+function UserRegistrationCtrl($scope, Users, $location, $http) {
   
   $scope.saveUser = function() {
       //alert(JSON.stringify($scope.user));
@@ -112,6 +124,17 @@ function UserRegistrationCtrl($scope, Users, $location) {
         });
       
   };
+  
+  $scope.checkEmail = function() {
+      
+      $http.get("/login/available?email=" + $scope.email).success(function(resp){
+          if (!resp.isLoginAvail) {
+              $scope.message = "This email has already been taken";
+          }
+      });
+      
+      
+  }
   
 };
 

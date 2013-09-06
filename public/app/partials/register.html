@@ -21,35 +21,35 @@
                     <p>Because nobody likes a dirty beach.</p>
                 </div>
             </div>
-            <form id="frmRegister" method="post" class="form-horizontal" autocomplete="off">
+            <form id="frmRegister" name="frmRegister" method="post" class="form-horizontal" autocomplete="off">
                 <div class="form-group">
-                    <label for="firstName" class="col-lg-2 control-label">First Name</label>
+                    <label for="firstName" class="col-lg-2 control-label">First Name *</label>
                     <div class="col-lg-4">
-                        <input ng-model="user.firstName" type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name" />
+                        <input required ng-model="user.firstName" type="text" class="form-control" id="firstName" name="firstName" placeholder="First Name" />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="lastName" class="col-lg-2 control-label">Last Name</label>
+                    <label for="lastName" class="col-lg-2 control-label">Last Name *</label>
                     <div class="col-lg-4">
-                        <input ng-model="user.lastName" type="text" class="form-control" id="lastName" name="lastName" placeholder="Last Name" />
+                        <input required ng-model="user.lastName" type="text" class="form-control" id="lastName" name="lastName" placeholder="Last Name" />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="email" class="col-lg-2 control-label">Email</label>
+                    <label for="email" class="col-lg-2 control-label">Email *</label>
                     <div class="col-lg-4">
-                        <input ng-model="user.email" type="email" class="form-control" id="email" name="email" placeholder="Email" />
+                        <input required ng-model="user.email" type="email" class="form-control" id="reg-email" name="email" placeholder="Email" />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="password" class="col-lg-2 control-label">Password</label>
+                    <label for="password" class="col-lg-2 control-label">Password *</label>
                     <div class="col-lg-4">
-                        <input ng-model="user.password" type="password" class="form-control" id="password" name="password" placeholder="Password" />
+                        <input ng-model="user.password" required type="password" class="form-control" id="reg-password" name="password" placeholder="Password" />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="password2" class="col-lg-2 control-label">Reenter Password</label>
+                    <label for="password2" class="col-lg-2 control-label">Reenter Password *</label>
                     <div class="col-lg-4">
-                        <input type="password" class="form-control" id="password2" name="password2" placeholder="Reenter Password" />
+                        <input type="password" class="form-control" required id="pw2" name="password2" placeholder="Reenter Password" />
                     </div>
                 </div>
                 
@@ -65,24 +65,53 @@
                         
                     </div>
                     <div class="col-lg-4">
-                        <button ng-click="saveUser()" class="btn btn-success">Submit</button>
+                        <button ng-click="saveUser()" ng-disabled="frmRegister.$invalid" class="btn btn-success">Submit</button>
                     </div>
                 </div>
                 
+                
             </form>
         </div>
-    </body>
     <script>
-        $("#frmRegister").validate({
-            rules: {
-                firstName: "required",
-                lastName: "required",
-                email: "required",
-                password: "required",
-                password2: {
-                    equalTo: "#password"
+    
+    $.validator.addMethod(
+        "uniqueEmail", 
+        function(value, element) {
+            var isValid;
+            $.ajax({
+                url: "/login/available",
+                data: "email="+value,
+                async: false,
+                success: function(data)
+                {
+                    isValid = data.isLoginAvail;
                 }
+             });
+            return isValid;
+        },
+        "This email has already been used to register."
+    );
+    //, uniqueEmail:true
+    $("#frmRegister").validate({
+        onkeyup:false,
+        rules: {
+            firstName: "required",
+            lastName: "required",
+            email: {required:true,
+                    uniqueEmail:true},
+            password: "required",
+            password2: {
+                equalTo: "#reg-password"
             }
-        });
+        }
+    });
+    
+    // $("#reg-email").blur(function(){
         
+    //     var jqxhr = $.ajax("/login/available?email=" + this.value ).done(function(data) { 
+    //         alert("Avail:" + data.isLoginAvail); }
+    //     );
+    // });    
     </script>
+    </body>
+    

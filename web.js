@@ -22,10 +22,16 @@ app.use(function(req, res, next){
   next();
 });
 
-app.post('/login',
+app.post('/login.old',
   passport.authenticate('local', { successRedirect: '/protected',
                                    failureRedirect: '/login',
                                    failureFlash: false })
+);
+
+app.post('/login',
+  passport.authenticate('local'), function(req, resp) { 
+        resp.send(req.user);
+      }
 );
 
 
@@ -33,6 +39,7 @@ app.get("/", routes.index);
 app.get('/login', routes.login);
 app.get('/users', routes.getUserList);
 app.get('/users/:id', routes.getUser);
+app.get('/login/available', routes.checkLoginAvailable)
 app.delete('/users/:id', routes.deleteUser);
 app.post('/users', routes.saveUser);
 

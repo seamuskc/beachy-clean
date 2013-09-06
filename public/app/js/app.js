@@ -10,3 +10,6 @@ angular.module('beachyCleanApp', ['beachyCleanAppFilters', 'beachyCleanAppServic
       when('/home', {templateUrl: 'partials/home.html', controller: HomeCtrl}).
       otherwise({redirectTo: '/home'});
 }]);
+
+
+

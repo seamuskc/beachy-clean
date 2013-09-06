@@ -52,18 +52,52 @@ exports.deleteUser = function(request, response) {
 
 exports.saveUser = function(request, response) {
     
+    var isNewUser = (request.body._id == undefined);
     
-    var id = (request.body._id) ? Oid(request.body._id) : Oid();
+    var id = (isNewUser) ? Oid() : Oid(request.body._id);
     var params = request.body;
     if (params.firstName == "Dave") {
         response.send(500, {message:"Daves Not Here"});
         return;
     }
-    var user = new User(id, params.firstName, params.lastName, params.email, pass.hashPassword(params.password, "xxx"));
-    db.users.save(user);
     
-    response.send(user);
+    var user = new User(id, params.firstName, params.lastName, params.email, pass.hashPassword(params.password, "xxx"));
+    if (!isNewUser) {
+        db.users.update(
+                {_id:user._id}, 
+                {$set:{
+                    firstName:user.firstName,
+                    lastName:user.lastName,
+                    email:user.email
+                    }
+                }
+            );
+        response.send(user);
+        return;
+    } 
 
+    db.users.findOne({email:user.email}, function(err, usr) {
+        
+        if (usr) {
+            response.send(500, {message:"This email has already been used to register."});    
+        } else {
+            db.users.save(user);    
+            response.send(user);
+        }
+    });
+    
+};
+
+exports.checkLoginAvailable = function(request, response) {
+    
+    var email = request.query.email;
+    db.users.findOne({email:email}, function(err, user) {
+        
+        var isLoginAvailable = (user === null);
+        console.log('checking if email is available: ' + user);
+        response.send({isLoginAvail:isLoginAvailable});
+    });
+    
 };
 
 var User = function(id, firstName, lastName, email, password) {
