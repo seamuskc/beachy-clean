@@ -3,7 +3,7 @@
 /* Controllers */
 
 
-function HeaderCtrl($scope, $location, $http) {
+function HeaderCtrl($rootScope, $scope, $location, AuthService) {
     
     $scope.isAuthenticated = false;
     $scope.displayLogin = false;
@@ -19,21 +19,23 @@ function HeaderCtrl($scope, $location, $http) {
         
         $scope.msg = undefined;
         
-        $http.post('/login', {username:$scope.email, password:$scope.password})
-        .success(function(resp){
-            $scope.user = resp;
-            $scope.isAuthenticated = true;
-            $scope.displayLogin = false;
-            $location.path("/users/list");
-        })
-        .error(function(resp){
-            $scope.msg = "Nope! Try again!";
-        })
+        AuthService.login($scope.email, $scope.password, 
+            function(resp){
+                $rootScope.user = resp;
+                $scope.isAuthenticated = true;
+                $scope.displayLogin = false;
+                $location.path("/users/list");
+            },
+            function(resp){
+                $scope.msg = "Nope! Try again!";
+            }
+        );
         
     };
     
     $scope.logout = function() {
         $scope.isAuthenticated = false;
+        $rootScope.user = undefined;
         $location.path("/home");
         
     };
