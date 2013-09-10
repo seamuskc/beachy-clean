@@ -15,22 +15,23 @@ function HeaderCtrl($rootScope, $scope, $location, AuthService) {
         $scope.msg = undefined;
     };
     
+    
+    var handleAuthSuccess = function(usr) {
+        $rootScope.currentUser = usr;
+        $scope.isAuthenticated = true;
+        $scope.displayLogin = false;
+        $location.path("/users/list");
+    };
+    
     $scope.login = function() {
         
         $scope.msg = undefined;
         
-        AuthService.login($scope.email, $scope.password, 
-            function(resp){
-                $rootScope.currentUser = resp;
-                $scope.isAuthenticated = true;
-                $scope.displayLogin = false;
-                $location.path("/users/list");
-            },
+        AuthService.login($scope.email, $scope.password, handleAuthSuccess,
             function(resp){
                 $scope.msg = "Nope! Try again!";
             }
         );
-        
     };
     
     $scope.logout = function() {
@@ -39,6 +40,10 @@ function HeaderCtrl($rootScope, $scope, $location, AuthService) {
         $location.path("/home");
         
     };
+    
+    $scope.$on('registrationComplete', function() {
+        handleAuthSuccess(AuthService.currentUser);
+    });  
 }
 
 function UserListCtrl($scope, Users) {
@@ -112,14 +117,15 @@ function UserDetailCtrl($scope, $routeParams, Users, $location) {
 
 //UserDetailCtrl.$inject = ['$scope', '$routeParams', 'Users'];
 
-function UserRegistrationCtrl($scope, Users, $location, $http) {
+function UserRegistrationCtrl($scope, Users, $location, $http, $rootScope, AuthService) {
   
   $scope.saveUser = function() {
-      //alert(JSON.stringify($scope.user));
+      //alert(JSON.stringify($scope.user)); 
       var newUser = new Users($scope.user);
       newUser.$save({}, 
         function(){
-            $location.path("/users/list")
+            AuthService.setCurrentUser(newUser);
+            $rootScope.$broadcast('registrationComplete');
         }, 
         function(response){
             $scope.message = response.data.message

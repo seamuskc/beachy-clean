@@ -11,22 +11,32 @@ app.factory('Users', function($resource) {
 
 app.factory('AuthService', function($http){
     
-    return {
+    var authService = {};
+    
+    authService.currentUser = '';
+    
+    authService.setCurrentUser = function(usr) {
+        this.currentUser = usr;
+    }
+    
+    authService.login = function(userName, password, success, error) {
         
-        login : function(userName, password, success, error) {
-            
-            $http.post('/login', {username:userName, password:password})
-                .success(function(resp){
-                    success(resp);
-                })
-                .error(function(resp){
-                    error(resp);
-                })
-        },
+        $http.post('/login', {username:userName, password:password})
+            .success(function(resp){
+                authService.setCurrentUser(resp);
+                success(resp);
+            })
+            .error(function(resp){
+                error(resp);
+            })
         
-        isPublic : function(url){
-            return ("partials/home.html" == url || "partials/register.html" == url);
-        }
     };
+    
+    authService.isPublic = function(url) {
+        return ("partials/home.html" == url || "partials/register.html" == url);
+    };
+    
+    return authService;
+    
     
 });
