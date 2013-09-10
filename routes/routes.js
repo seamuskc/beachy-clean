@@ -52,40 +52,35 @@ exports.deleteUser = function(request, response) {
 
 exports.saveUser = function(request, response) {
     
-    var isNewUser = (request.body._id == undefined);
+    var isNewUser = (request.body._id === undefined);
     
     var id = (isNewUser) ? Oid() : Oid(request.body._id);
     var params = request.body;
-    if (params.firstName == "Dave") {
-        response.send(500, {message:"Daves Not Here"});
-        return;
-    }
-    
     var user = new User(id, params.firstName, params.lastName, params.email, pass.hashPassword(params.password, "xxx"));
-    if (!isNewUser) {
-        db.users.update(
-                {_id:user._id}, 
-                {$set:{
-                    firstName:user.firstName,
-                    lastName:user.lastName,
-                    email:user.email
-                    }
-                }
-            );
-        response.send(user);
-        return;
-    } 
-
-    db.users.findOne({email:user.email}, function(err, usr) {
+    
+    db.users.findOne({$and: [{email:user.email}, {_id:{$ne:user._id}}]}, function(err, usr) {
         
         if (usr) {
-            response.send(500, {message:"This email has already been used to register."});    
+            response.send(500, {message:"This email has already been used to register."}); 
+            return;
+        }
+        
+        if (isNewUser) {
+           db.users.save(user);    
+            response.send(user);
         } else {
-            db.users.save(user);    
+            db.users.update(
+                    {_id:user._id}, 
+                    {$set:{
+                        firstName:user.firstName,
+                        lastName:user.lastName,
+                        email:user.email
+                        }
+                    }
+                );
             response.send(user);
         }
     });
-    
 };
 
 exports.checkLoginAvailable = function(request, response) {
