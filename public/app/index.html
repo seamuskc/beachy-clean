@@ -94,7 +94,7 @@
             </div>
             
             <div id="user-info" ng-show="isAuthenticated">
-                Hello {{user.firstName}} <a ng-click="logout()">Logout</a>
+                Hello {{currentUsers.firstName}} <a ng-click="logout()">Logout</a>
             </div>
             <span ng-show="msg">{{msg}}</span>
         </div>

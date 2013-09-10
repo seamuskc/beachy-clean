@@ -21,7 +21,7 @@ function HeaderCtrl($rootScope, $scope, $location, AuthService) {
         
         AuthService.login($scope.email, $scope.password, 
             function(resp){
-                $rootScope.user = resp;
+                $rootScope.currentUser = resp;
                 $scope.isAuthenticated = true;
                 $scope.displayLogin = false;
                 $location.path("/users/list");
@@ -35,7 +35,7 @@ function HeaderCtrl($rootScope, $scope, $location, AuthService) {
     
     $scope.logout = function() {
         $scope.isAuthenticated = false;
-        $rootScope.user = undefined;
+        $rootScope.currentUser = undefined;
         $location.path("/home");
         
     };

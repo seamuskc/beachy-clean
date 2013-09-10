@@ -12,13 +12,13 @@ angular.module('beachyCleanApp', ['beachyCleanAppFilters', 'beachyCleanAppServic
     }])
 
 
-    .run(['$rootScope', '$location', function ($rootScope, $location, AuthService) {
+    .run(['$rootScope', '$location', 'AuthService', function ($rootScope, $location, AuthService) {
 
         $rootScope.$on("$routeChangeStart", function (event, next, current) {
             if (AuthService.isPublic(next.$$route.templateUrl)) {
                 return;
             }
-            if (!$rootScope.user) {
+            if (!$rootScope.currentUser) {
                 // User isn't logged in, send to home page
                 $location.path('/home');
             }
