@@ -18,7 +18,7 @@ angular.module('beachyCleanApp', ['beachyCleanAppFilters', 'beachyCleanAppServic
             if (AuthService.isPublic(next.$$route.templateUrl)) {
                 return;
             }
-            if (!$rootScope.currentUser) {
+            if (!AuthService.isAuthenticated()) {
                 // User isn't logged in, send to home page
                 $location.path('/home');
             }

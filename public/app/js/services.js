@@ -15,6 +15,14 @@ app.factory('AuthService', function($http){
     
     authService.currentUser = '';
     
+    authService.isAuthenticated = function(){
+        return (this.currentUser !== '');  
+    };
+    
+    authService.logOut = function(){
+        this.currentUser = '';
+    };
+    
     authService.setCurrentUser = function(usr) {
         this.currentUser = usr;
     }

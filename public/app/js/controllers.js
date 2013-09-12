@@ -11,21 +11,22 @@ function HeaderCtrl($rootScope, $scope, $location, AuthService) {
     $scope.showLogin = function() {
         $scope.email = "";
         $scope.password = "";
+        $scope.msg = '';
         $scope.displayLogin = true;
-        $scope.msg = undefined;
     };
     
     
     var handleAuthSuccess = function(usr) {
-        $rootScope.currentUser = usr;
+        $scope.currentUser = usr;
         $scope.isAuthenticated = true;
         $scope.displayLogin = false;
+        $scope.msg = '';
         $location.path("/users/list");
     };
     
     $scope.login = function() {
         
-        $scope.msg = undefined;
+        $scope.msg = '';
         
         AuthService.login($scope.email, $scope.password, handleAuthSuccess,
             function(resp){
@@ -36,7 +37,8 @@ function HeaderCtrl($rootScope, $scope, $location, AuthService) {
     
     $scope.logout = function() {
         $scope.isAuthenticated = false;
-        $rootScope.currentUser = undefined;
+        AuthService.logOut();
+        $scope.currentUser = undefined;
         $location.path("/home");
         
     };
