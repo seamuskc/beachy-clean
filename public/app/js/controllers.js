@@ -108,6 +108,7 @@ function UserDetailCtrl($scope, $routeParams, Users, $location) {
             },
             function(response) {
                 // failure
+                $scope.closeAlert();
                 $scope.alerts.push({type: "error", msg: response.data.message});
             }
         );
