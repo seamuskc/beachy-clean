@@ -89,7 +89,7 @@ exports.checkLoginAvailable = function(request, response) {
     db.users.findOne({email:email}, function(err, user) {
         
         var isLoginAvailable = (user === null);
-        console.log('checking if email is available: ' + user);
+        console.log('checking if email is available for user: ' + user);
         response.send({isLoginAvail:isLoginAvailable});
     });
     
